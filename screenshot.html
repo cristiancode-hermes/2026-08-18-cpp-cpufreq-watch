@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cpufreq-watch</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1e1e2e; font-family: 'Fira Code', monospace; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 40px 20px; }
+  .terminal {
+    background: #181825;
+    border-radius: 12px;
+    padding: 24px 32px;
+    color: #cdd6f4;
+    font-size: 14px;
+    line-height: 1.6;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    max-width: 820px;
+    width: 100%;
+  }
+  .terminal .bold { font-weight: 600; }
+  .terminal .cyan { color: #89dceb; }
+  .terminal .green { color: #a6e3a1; }
+  .terminal .yellow { color: #f9e2af; }
+  .terminal .red { color: #f38ba8; }
+  .terminal .dim { color: #6c7086; }
+  .terminal .magenta { color: #cba6f7; }
+  .terminal .blue { color: #89b4fa; }
+  .terminal .bar-fill { color: #89dceb; }
+  .terminal .bar-empty { color: #45475a; }
+  .terminal .pct-high { color: #f38ba8; }
+  .terminal .pct-mid { color: #f9e2af; }
+  .terminal .pct-low { color: #a6e3a1; }
+  .header-box { border: 2px solid #89dceb; border-radius: 8px; padding: 12px 20px; margin-bottom: 20px; }
+  .header-box .title { color: #89dceb; font-size: 18px; font-weight: 600; }
+  .header-box .sub { color: #6c7086; font-size: 12px; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  th { color: #6c7086; text-align: left; font-weight: 400; padding: 4px 8px; border-bottom: 1px solid #45475a; font-size: 13px; }
+  td { padding: 6px 8px; font-size: 13px; white-space: nowrap; }
+  .section-title { color: #cdd6f4; font-weight: 600; margin-top: 16px; margin-bottom: 8px; }
+  .agg-row { display: flex; gap: 40px; margin-bottom: 8px; flex-wrap: wrap; }
+  .agg-item { }
+  .agg-label { color: #6c7086; font-size: 12px; }
+  .agg-value { color: #cdd6f4; font-size: 15px; font-weight: 600; }
+  .agg-value.cyan { color: #89dceb; }
+  .agg-value.green { color: #a6e3a1; }
+  .agg-value.yellow { color: #f9e2af; }
+  .turbo-star { color: #f9e2af; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="terminal">
+  <div class="header-box">
+    <div class="title">+============================================+</div>
+    <div class="title">|        CPU Frequency Scaling Monitor       |</div>
+    <div class="title">+============================================+</div>
+    <div class="sub">Source: /sys/devices/system/cpu/cpu*/cpufreq/</div>
+  </div>
+
+  <div class="section-title">-- Aggregate --</div>
+  <div class="agg-row">
+    <div class="agg-item">
+      <div class="agg-label">CPUs online</div>
+      <div class="agg-value green">8 <span style="color:#6c7086;font-weight:400">of 8</span></div>
+    </div>
+    <div class="agg-item">
+      <div class="agg-label">Total freq</div>
+      <div class="agg-value cyan">22.10 GHz <span style="color:#6c7086;font-weight:400">/ 28.80 GHz</span></div>
+    </div>
+    <div class="agg-item">
+      <div class="agg-label">Utilization</div>
+      <div class="agg-value">76.7% <span class="bar-fill">||||||||||||||</span><span class="bar-empty">......</span></div>
+    </div>
+    <div class="agg-item">
+      <div class="agg-label">Turbo active</div>
+      <div class="agg-value yellow">4 <span style="color:#6c7086;font-weight:400">cores</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">-- Per-Core --</div>
+  <table>
+    <tr>
+      <th>CPU</th><th>Current</th><th>Base</th><th>Max</th><th>Governor</th><th>Load</th><th></th>
+    </tr>
+    <tr>
+      <td class="cyan">cpu0</td>
+      <td class="pct-high">3800 MHz</td>
+      <td class="dim">4700 MHz</td>
+      <td class="green">5000 MHz</td>
+      <td>performance</td>
+      <td><span class="pct-high">|||||||||</span><span class="bar-empty">....</span></td>
+      <td class="turbo-star">*</td>
+    </tr>
+    <tr>
+      <td class="cyan">cpu1</td>
+      <td class="pct-mid">2400 MHz</td>
+      <td class="dim">4700 MHz</td>
+      <td class="green">5000 MHz</td>
+      <td>powersave</td>
+      <td><span class="pct-mid">||||||</span><span class="bar-empty">......</span></td>
+      <td class="turbo-star">*</td>
+    </tr>
+    <tr>
+      <td class="cyan">cpu2</td>
+      <td class="pct-high">4100 MHz</td>
+      <td class="dim">4700 MHz</td>
+      <td class="green">5000 MHz</td>
+      <td>performance</td>
+      <td><span class="pct-high">||||||||||</span><span class="bar-empty">..</span></td>
+      <td class="turbo-star">*</td>
+    </tr>
+    <tr>
+      <td class="cyan">cpu3</td>
+      <td class="pct-low">1200 MHz</td>
+      <td class="dim">4700 MHz</td>
+      <td class="green">5000 MHz</td>
+      <td>powersave</td>
+      <td><span class="pct-low">|||</span><span class="bar-empty">.........</span></td>
+      <td class="turbo-star">*</td>
+    </tr>
+    <tr>
+      <td class="cyan">cpu4</td>
+      <td class="pct-mid">1800 MHz</td>
+      <td class="dim">2100 MHz</td>
+      <td class="green">2400 MHz</td>
+      <td>powersave</td>
+      <td><span class="pct-mid">|||||||</span><span class="bar-empty">.....</span></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="cyan">cpu5</td>
+      <td class="pct-mid">2000 MHz</td>
+      <td class="dim">2100 MHz</td>
+      <td class="green">2400 MHz</td>
+      <td>powersave</td>
+      <td><span class="pct-mid">||||||||</span><span class="bar-empty">....</span></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="cyan">cpu6</td>
+      <td class="pct-low">1500 MHz</td>
+      <td class="dim">2100 MHz</td>
+      <td class="green">2400 MHz</td>
+      <td>powersave</td>
+      <td><span class="pct-low">||||||</span><span class="bar-empty">......</span></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="cyan">cpu7</td>
+      <td class="pct-mid">1900 MHz</td>
+      <td class="dim">2100 MHz</td>
+      <td class="green">2400 MHz</td>
+      <td>powersave</td>
+      <td><span class="pct-mid">||||||||</span><span class="bar-empty">....</span></td>
+      <td></td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>
